@@ -5,9 +5,13 @@ import android.util.Log;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import java.util.ArrayList;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import yahoofinance.Stock;
 
 /**
  * Created by sam_chordas on 10/8/15.
@@ -18,31 +22,20 @@ public class Utils {
 
   public static boolean showPercent = true;
 
-  public static ArrayList quoteJsonToContentVals(String JSON){
+  public static ArrayList quoteJsonToContentVals(Map<String, Stock> stocks){
     ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
-    JSONObject jsonObject = null;
-    JSONArray resultsArray = null;
-    try{
-      jsonObject = new JSONObject(JSON);
-      if (jsonObject != null && jsonObject.length() != 0){
-        jsonObject = jsonObject.getJSONObject("query");
-        int count = Integer.parseInt(jsonObject.getString("count"));
-        if (count == 1){
-          jsonObject = jsonObject.getJSONObject("results")
-              .getJSONObject("quote");
-          batchOperations.add(buildBatchOperation(jsonObject));
-        } else{
-          resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
-          if (resultsArray != null && resultsArray.length() != 0){
-            for (int i = 0; i < resultsArray.length(); i++){
-              jsonObject = resultsArray.getJSONObject(i);
-              batchOperations.add(buildBatchOperation(jsonObject));
-            }
-          }
+    try{
+      //jsonObject = new JSONObject(JSON);
+      if (stocks != null && stocks.size() != 0){
+        for (Map.Entry<String,Stock> entry : stocks.entrySet())
+        {
+          Stock stock=(Stock)entry.getValue();
+          if(stock.getQuote()!=null)
+          batchOperations.add(buildBatchOperation(stock));
         }
       }
-    } catch (JSONException e){
+    } catch (Exception e){
       Log.e(LOG_TAG, "String to JSON failed: " + e);
     }
     return batchOperations;
@@ -70,16 +63,16 @@ public class Utils {
     return change;
   }
 
-  public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject){
+  public static ContentProviderOperation buildBatchOperation(Stock stock){
     ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
         QuoteProvider.Quotes.CONTENT_URI);
     try {
-      String change = jsonObject.getString("Change");
-      builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
-      builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
-      builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-          jsonObject.getString("ChangeinPercent"), true));
-      builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+      String change = stock.getQuote().getChange().toString();
+      builder.withValue(QuoteColumns.SYMBOL, stock.getSymbol());
+      builder.withValue(QuoteColumns.BIDPRICE, stock.getQuote().getBid().toString());
+      builder.withValue(QuoteColumns.PERCENT_CHANGE,stock.getQuote().getChangeInPercent().toString() /*truncateChange(
+         stock.getQuote().getChangeInPercent().toString(), true)*/);
+      builder.withValue(QuoteColumns.CHANGE,change /*truncateChange(change, false)*/);
       builder.withValue(QuoteColumns.ISCURRENT, 1);
       if (change.charAt(0) == '-'){
         builder.withValue(QuoteColumns.ISUP, 0);
@@ -87,9 +80,23 @@ public class Utils {
         builder.withValue(QuoteColumns.ISUP, 1);
       }
 
-    } catch (JSONException e){
+    } catch (Exception e){
       e.printStackTrace();
     }
     return builder.build();
+  }
+  public boolean isDataAvailable(String json){
+    JSONObject jsonObject = null;
+    try
+    {
+      jsonObject=new JSONObject(json);
+
+
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+
+
+    return false;
   }
 }
