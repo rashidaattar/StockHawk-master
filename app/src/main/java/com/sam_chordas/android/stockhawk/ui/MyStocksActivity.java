@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -35,7 +36,7 @@ import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,SharedPreferences.OnSharedPreferenceChangeListener{
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -47,16 +48,34 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private CharSequence mTitle;
   private Intent mServiceIntent;
   private ItemTouchHelper mItemTouchHelper;
+  SharedPreferences sharedPreferences=null;
+  SharedPreferences.Editor  editor=null;
   private static final int CURSOR_LOADER_ID = 0;
   private QuoteCursorAdapter mCursorAdapter;
   private Context mContext;
   private Cursor mCursor;
   boolean isConnected;
+  SharedPreferences.OnSharedPreferenceChangeListener myPrefListner;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
+    Toast.makeText(mContext,"No such stock exists",Toast.LENGTH_SHORT).show();
+    sharedPreferences=getPreferences(Context.MODE_PRIVATE);
+    editor=sharedPreferences.edit();
+    myPrefListner=new SharedPreferences.OnSharedPreferenceChangeListener() {
+      @Override
+      public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if(key.equalsIgnoreCase(mContext.getString(R.string.is_data_available)) &&
+                !(sharedPreferences.getBoolean(mContext.getString(R.string.is_data_available),true)))
+        {
+          Toast.makeText(mContext,"No such stock available",Toast.LENGTH_SHORT).show();
+        }
+      }
+    };
+
     ConnectivityManager cm =
         (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -160,6 +179,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onResume() {
     super.onResume();
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    sharedPreferences.registerOnSharedPreferenceChangeListener(myPrefListner);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    sharedPreferences.unregisterOnSharedPreferenceChangeListener(myPrefListner);
   }
 
   public void networkToast(){
@@ -223,4 +249,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mCursorAdapter.swapCursor(null);
   }
 
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    if(key.equalsIgnoreCase(String.valueOf(R.string.is_data_available)) &&
+            !(sharedPreferences.getBoolean(String.valueOf(R.string.is_data_available),true)))
+    {
+      Toast.makeText(this,"No such stock available",Toast.LENGTH_SHORT).show();
+    }
+  }
 }

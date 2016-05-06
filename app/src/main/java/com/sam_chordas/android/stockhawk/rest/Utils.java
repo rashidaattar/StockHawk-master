@@ -31,8 +31,11 @@ public class Utils {
         for (Map.Entry<String,Stock> entry : stocks.entrySet())
         {
           Stock stock=(Stock)entry.getValue();
-          if(stock.getQuote()!=null)
-          batchOperations.add(buildBatchOperation(stock));
+          if(stock.getQuote().getChange()!=null)
+          {
+            batchOperations.add(buildBatchOperation(stock));
+          }
+
         }
       }
     } catch (Exception e){

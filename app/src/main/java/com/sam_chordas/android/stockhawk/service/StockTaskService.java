@@ -1,15 +1,21 @@
 package com.sam_chordas.android.stockhawk.service;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -39,11 +45,14 @@ public class StockTaskService extends GcmTaskService{
   private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
   private String[] symbols;
+  SharedPreferences sharedPreferences=null;
+  SharedPreferences.Editor  editor=null;
 
   public StockTaskService(){}
 
   public StockTaskService(Context context){
     mContext = context;
+
   }
   String fetchData(String url) throws IOException{
     Request request = new Request.Builder()
@@ -60,7 +69,8 @@ public class StockTaskService extends GcmTaskService{
     if (mContext == null){
       mContext = this;
     }
-
+    sharedPreferences= PreferenceManager.getDefaultSharedPreferences(mContext);
+    editor=sharedPreferences.edit();
     if (params.getTag().equals("init") || params.getTag().equals("periodic")){
       isUpdate = true;
       initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
@@ -102,8 +112,23 @@ public class StockTaskService extends GcmTaskService{
             mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                 null, null);
           }
-          mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-              Utils.quoteJsonToContentVals(stocks));
+          if(stocks.size()==1 && stocks.containsKey(params.getExtras().getString("symbol")))
+          {
+            if(stocks.get(params.getExtras().getString("symbol")).getName()==null)
+            {
+             // Toast.makeText(mContext,"No such stock exists",Toast.LENGTH_SHORT).show();
+              editor.putBoolean(mContext.getString(R.string.is_data_available),false).commit();
+              return result;
+            }
+          }
+          ArrayList<ContentProviderOperation> batchOperations= Utils.quoteJsonToContentVals(stocks);
+          if(batchOperations!=null && batchOperations.size()>0)
+          {
+            editor.putBoolean(mContext.getString(R.string.is_data_available),true).commit();
+            mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,batchOperations);
+          }
+
+
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
         }
