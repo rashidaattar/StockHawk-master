@@ -61,7 +61,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
-    Toast.makeText(mContext,"No such stock exists",Toast.LENGTH_SHORT).show();
     sharedPreferences=getPreferences(Context.MODE_PRIVATE);
     editor=sharedPreferences.edit();
     myPrefListner=new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -105,6 +104,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               @Override public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
+                mCursor.moveToPosition(position);
+                String symbol=mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+                Intent intent=new Intent(mContext,StockHistoryActivity.class);
+                intent.putExtra("stocksymbol",symbol);
+                startActivity(intent);
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
@@ -148,7 +152,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       }
     });
 
-    ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
+    ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter,recyclerView);
     mItemTouchHelper = new ItemTouchHelper(callback);
     mItemTouchHelper.attachToRecyclerView(recyclerView);
 
@@ -256,5 +260,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     {
       Toast.makeText(this,"No such stock available",Toast.LENGTH_SHORT).show();
     }
+  }
+  public  void showToast(Context context)
+  {
+    Toast.makeText(context,"No data available",Toast.LENGTH_SHORT).show();
   }
 }

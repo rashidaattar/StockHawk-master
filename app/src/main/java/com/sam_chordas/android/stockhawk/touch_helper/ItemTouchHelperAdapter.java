@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.touch_helper;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
@@ -9,5 +10,5 @@ import android.view.View;
  */
 public interface ItemTouchHelperAdapter {
 
-  void onItemDismiss(int position);
+  void onItemDismiss(int position,RecyclerView rv);
 }

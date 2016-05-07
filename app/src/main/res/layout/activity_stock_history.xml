@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.sam_chordas.android.stockhawk.ui.StockHistoryActivity">
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:layout_below="@id/chart"
+        card_view:cardCornerRadius="@dimen/card_radius"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPaddingBottom="@dimen/activity_vertical_margin"
+        card_view:contentPaddingLeft="@dimen/activity_vertical_margin"
+        card_view:contentPaddingRight="@dimen/activity_vertical_margin"
+        card_view:contentPaddingTop="@dimen/activity_vertical_margin"
+        card_view:cardBackgroundColor="@color/material_blue_500"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/card_view"
+        >
+        </android.support.v7.widget.CardView>
+</RelativeLayout>

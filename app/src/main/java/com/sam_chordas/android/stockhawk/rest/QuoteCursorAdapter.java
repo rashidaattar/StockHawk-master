@@ -1,11 +1,14 @@
 package com.sam_chordas.android.stockhawk.rest;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +40,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
     robotoLight = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
-    View itemView = LayoutInflater.from(parent.getContext())
+    final View itemView = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.list_item_quote, parent, false);
     ViewHolder vh = new ViewHolder(itemView);
     return vh;
@@ -72,12 +75,42 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     }
   }
 
-  @Override public void onItemDismiss(int position) {
+  @Override
+  public void onItemDismiss(final int position, final RecyclerView rv) {
     Cursor c = getCursor();
     c.moveToPosition(position);
-    String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+    final RecyclerView rv1=rv;
+     final String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+    final String percentChange=c.getString(c.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
+    final String change=c.getString(c.getColumnIndex(QuoteColumns.CHANGE));
+    final String bidprice=c.getString(c.getColumnIndex(QuoteColumns.BIDPRICE));
+//    final String created=c.getString(c.getColumnIndex(QuoteColumns.CREATED));
+    final String isup=c.getString(c.getColumnIndex(QuoteColumns.ISUP));
+//    final int isCurrent=c.getInt(c.getColumnIndex(QuoteColumns.ISCURRENT));
     mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
     notifyItemRemoved(position);
+    Snackbar snackbar = Snackbar
+            .make(rv, "Stock is deleted", Snackbar.LENGTH_LONG);
+    snackbar.setAction("UNDO", new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        ContentValues contentValues=new ContentValues();
+        contentValues.put(QuoteColumns.PERCENT_CHANGE,percentChange);
+        contentValues.put(QuoteColumns.CHANGE,change);
+        contentValues.put(QuoteColumns.BIDPRICE,bidprice);
+        contentValues.put(QuoteColumns.SYMBOL,symbol);
+       // contentValues.put(QuoteColumns.CREATED,created);
+        contentValues.put(QuoteColumns.ISCURRENT,1);
+        contentValues.put(QuoteColumns.ISUP,isup);
+        //contentValues.put(QuoteColumns._ID, position);
+        mContext.getContentResolver().insert(QuoteProvider.Quotes.CONTENT_URI, contentValues);
+        notifyDataSetChanged();
+        Snackbar snackbar1 = Snackbar
+                .make(rv1, "Stock is restored", Snackbar.LENGTH_SHORT);
+        snackbar1.show();
+      }
+    }).show();
+
   }
 
   @Override public int getItemCount() {
@@ -112,4 +145,5 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     }
   }
+
 }

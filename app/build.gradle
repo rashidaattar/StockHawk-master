@@ -35,4 +35,5 @@ dependencies {
         transitive = true
     }
     compile 'com.yahoofinance-api:YahooFinanceAPI:3.2.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 }

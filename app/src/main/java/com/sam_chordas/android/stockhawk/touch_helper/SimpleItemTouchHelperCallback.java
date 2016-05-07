@@ -11,9 +11,11 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
   private final ItemTouchHelperAdapter mAdapter;
   public static final float ALPHA_FULL = 1.0f;
+  private final RecyclerView rv;
 
-  public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter){
+  public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter,RecyclerView rv){
     mAdapter = adapter;
+    this.rv = rv;
   }
 
   @Override
@@ -35,7 +37,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
 
   @Override
   public void onSwiped(RecyclerView.ViewHolder viewHolder, int i){
-    mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+    mAdapter.onItemDismiss(viewHolder.getAdapterPosition(),rv);
   }
 
 

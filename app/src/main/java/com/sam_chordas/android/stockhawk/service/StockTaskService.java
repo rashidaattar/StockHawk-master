@@ -7,6 +7,7 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -112,22 +114,34 @@ public class StockTaskService extends GcmTaskService{
             mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                 null, null);
           }
-          if(stocks.size()==1 && stocks.containsKey(params.getExtras().getString("symbol")))
+          if(stocks.size()==1 && stocks.containsKey(params.getExtras().getString("symbol"))
+                  && stocks.get(params.getExtras().getString("symbol")).getName()==null)
           {
-            if(stocks.get(params.getExtras().getString("symbol")).getName()==null)
-            {
+
              // Toast.makeText(mContext,"No such stock exists",Toast.LENGTH_SHORT).show();
               editor.putBoolean(mContext.getString(R.string.is_data_available),false).commit();
+              Handler h = new Handler(mContext.getMainLooper());
+
+              h.post(new Runnable() {
+                @Override
+                public void run() {
+                  Toast.makeText(mContext,"stock not found",Toast.LENGTH_LONG).show();
+                }
+              });
+
+              //new MyStocksActivity().showToast(mContext);
               return result;
+
+          }
+          else
+          {
+            ArrayList<ContentProviderOperation> batchOperations= Utils.quoteJsonToContentVals(stocks);
+            if(batchOperations!=null && batchOperations.size()>0)
+            {
+              editor.putBoolean(mContext.getString(R.string.is_data_available),true).commit();
+              mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,batchOperations);
             }
           }
-          ArrayList<ContentProviderOperation> batchOperations= Utils.quoteJsonToContentVals(stocks);
-          if(batchOperations!=null && batchOperations.size()>0)
-          {
-            editor.putBoolean(mContext.getString(R.string.is_data_available),true).commit();
-            mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,batchOperations);
-          }
-
 
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
