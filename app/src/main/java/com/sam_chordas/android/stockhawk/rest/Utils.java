@@ -72,7 +72,10 @@ public class Utils {
     try {
       String change = stock.getQuote().getChange().toString();
       builder.withValue(QuoteColumns.SYMBOL, stock.getSymbol());
-      builder.withValue(QuoteColumns.BIDPRICE, stock.getQuote().getBid().toString());
+      if(stock.getQuote().getBid()!=null)
+        builder.withValue(QuoteColumns.BIDPRICE, stock.getQuote().getBid().toString());
+      else
+        builder.withValue(QuoteColumns.BIDPRICE, " ");
       builder.withValue(QuoteColumns.PERCENT_CHANGE,stock.getQuote().getChangeInPercent().toString() /*truncateChange(
          stock.getQuote().getChangeInPercent().toString(), true)*/);
       builder.withValue(QuoteColumns.CHANGE,change /*truncateChange(change, false)*/);
