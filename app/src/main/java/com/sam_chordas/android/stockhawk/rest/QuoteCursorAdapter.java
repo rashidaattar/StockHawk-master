@@ -19,6 +19,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
+import com.sam_chordas.android.stockhawk.widget.WidgetRemoteViewFactory;
 
 /**
  * Created by sam_chordas on 10/6/15.
@@ -32,9 +33,11 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   private static Context mContext;
   private static Typeface robotoLight;
   private boolean isPercent;
+  private WidgetRemoteViewFactory widgetRemoteViewFactory;
   public QuoteCursorAdapter(Context context, Cursor cursor){
     super(context, cursor);
     mContext = context;
+    widgetRemoteViewFactory=new WidgetRemoteViewFactory(mContext);
   }
 
   @Override
@@ -105,6 +108,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         //contentValues.put(QuoteColumns._ID, position);
         mContext.getContentResolver().insert(QuoteProvider.Quotes.CONTENT_URI, contentValues);
         notifyDataSetChanged();
+        widgetRemoteViewFactory.onDataSetChanged();
         Snackbar snackbar1 = Snackbar
                 .make(rv1, "Stock is restored", Snackbar.LENGTH_SHORT);
         snackbar1.show();
@@ -145,5 +149,6 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     }
   }
+
 
 }

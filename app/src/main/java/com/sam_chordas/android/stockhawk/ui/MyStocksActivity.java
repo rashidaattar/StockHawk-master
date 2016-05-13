@@ -158,7 +158,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     mTitle = getTitle();
     if (isConnected){
-      long period = 3600L;
+      long period = 1800L; //made this half an hour
       long flex = 10L;
       String periodicTag = "periodic";
 

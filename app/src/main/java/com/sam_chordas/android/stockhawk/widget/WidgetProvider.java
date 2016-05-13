@@ -55,7 +55,8 @@ public class WidgetProvider extends AppWidgetProvider {
                     PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setPendingIntentTemplate(R.id.list1, toastPendingIntent);
             //rv.setOnClickPendingIntent(R.id.list1,toastPendingIntent);
-            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            appWidgetManager.updateAppWidget(appWidgetId, rv);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.list1);
 
         }
     }

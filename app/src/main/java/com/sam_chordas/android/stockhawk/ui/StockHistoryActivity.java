@@ -35,6 +35,9 @@ public class StockHistoryActivity extends AppCompatActivity {
     private Context context;
     private String symbol="";
     private List<HistoricalQuote> historicalQuotes = new ArrayList<>();
+    private ArrayList<Entry> entriesHigh = new ArrayList<>();
+    private ArrayList<Entry> entriesLow = new ArrayList<>();
+    private ArrayList<String> labels=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,16 @@ public class StockHistoryActivity extends AppCompatActivity {
         lineChart= (LineChart) findViewById(R.id.chart);
         if(getIntent().hasExtra("stocksymbol"))
             symbol=getIntent().getStringExtra("stocksymbol");
-        new MyAsync().execute();
+        if(savedInstanceState==null){
+            new MyAsync().execute();
+        }
+        else{
+            entriesHigh=savedInstanceState.getParcelableArrayList("highEntry");
+            entriesLow=savedInstanceState.getParcelableArrayList("lowEntry");
+            labels=savedInstanceState.getStringArrayList("labels");
+            populateChart(entriesHigh,entriesLow,labels);
+        }
+
     }
 
     @Override
@@ -103,11 +115,8 @@ public class StockHistoryActivity extends AppCompatActivity {
         }
     }
 
-    private LineData plotgraph() {
+    private void plotgraph() {
 
-        ArrayList<Entry> entriesHigh = new ArrayList<>();
-        ArrayList<Entry> entriesLow = new ArrayList<>();
-        ArrayList<String> labels=new ArrayList<>();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
         ArrayList<List<Entry>> lists=new ArrayList<>();
         for(int i=0;i<historicalQuotes.size();i++)
@@ -119,6 +128,27 @@ public class StockHistoryActivity extends AppCompatActivity {
             entriesLow.add(entryLow);
             labels.add(simpleDateFormat.format(historicalQuote.getDate().getTime()));
         }
+        populateChart(entriesHigh,entriesLow,labels);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if(entriesHigh!=null){
+            outState.putParcelableArrayList("highEntry",entriesHigh);
+        }
+       if(entriesLow!=null){
+           outState.putParcelableArrayList("lowEntry",entriesLow);
+       }
+       if(labels!=null){
+           outState.putStringArrayList("labels",labels);
+       }
+
+        super.onSaveInstanceState(outState);
+    }
+
+    public void populateChart( ArrayList<Entry> entriesHigh,ArrayList<Entry> entriesLow,ArrayList<String> labels ){
         LineDataSet datasetHigh = new LineDataSet(entriesHigh, "High");
         LineDataSet datasetLow=new LineDataSet(entriesLow,"Low");
         List<LineDataSet> lineDataSets=new ArrayList<>();
@@ -131,7 +161,7 @@ public class StockHistoryActivity extends AppCompatActivity {
         lineChart.setAutoScaleMinMaxEnabled(true);
         lineChart.setBackgroundColor(context.getResources().getColor(R.color.material_blue_500));
         lineChart.fitScreen();
-        return data;
+
     }
 }
 

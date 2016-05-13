@@ -4,8 +4,8 @@
     android:minHeight="100dip"
     android:minResizeHeight="100dip"
     android:minResizeWidth="100dip"
-    android:minWidth="100dip"
-
+    android:minWidth="150dip"
+    android:previewImage="@drawable/ic_launcher"
     android:resizeMode="vertical|horizontal"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="keyguard|home_screen" >

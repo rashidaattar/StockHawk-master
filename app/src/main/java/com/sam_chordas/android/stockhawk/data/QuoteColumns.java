@@ -26,6 +26,6 @@ public class QuoteColumns {
   @DataType(DataType.Type.INTEGER) @NotNull
   public static final String ISCURRENT = "is_current";
 
-  public static final String[] PROJECTION_ALL={_ID,SYMBOL,PERCENT_CHANGE,CHANGE,BIDPRICE,CREATED,ISUP,ISCURRENT};
+  public static final String[] PROJECTION_ALL=new String[]{_ID, SYMBOL,PERCENT_CHANGE,CHANGE,BIDPRICE,CREATED,ISUP,ISCURRENT};
   public static final String SORT_ORDER_DEFAULT = _ID + " ";
 }

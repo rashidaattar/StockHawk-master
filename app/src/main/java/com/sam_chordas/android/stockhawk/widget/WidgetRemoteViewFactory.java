@@ -22,23 +22,31 @@ import yahoofinance.Stock;
 public class WidgetRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Cursor mCursor;
     private Context mContext;
-    private int mAppWidgetId;
+   // private int mAppWidgetId;
 
-    public WidgetRemoteViewFactory(Context context, Intent intent){
+    public WidgetRemoteViewFactory(Context context){
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+       // mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+               // AppWidgetManager.INVALID_APPWIDGET_ID);
     }
     @Override
     public void onCreate() {
 
-        mCursor=mContext.getContentResolver().query
-                (QuoteProvider.Quotes.CONTENT_URI, QuoteColumns.PROJECTION_ALL,null,null,QuoteColumns.SORT_ORDER_DEFAULT);
+       /* mCursor= mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                QuoteColumns.PROJECTION_ALL, QuoteColumns.ISCURRENT + " LIKE ?",
+                new String[]{"1"}, null);*/
 
     }
 
     @Override
     public void onDataSetChanged() {
+       mCursor= mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                QuoteColumns.PROJECTION_ALL, QuoteColumns.ISCURRENT + " LIKE ?",
+                new String[]{"1"}, null);
+        for(int i=0;i<mCursor.getCount();i++){
+            getCount();
+            getViewAt(i);
+        }
 
     }
 
@@ -64,6 +72,8 @@ public class WidgetRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
         rv.setOnClickFillInIntent(R.id.stock_symbol, fillInIntent);
 
         return rv;
+
+
     }
 
     @Override
@@ -83,6 +93,6 @@ public class WidgetRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public boolean hasStableIds() {
-        return true;
+        return false;
     }
 }

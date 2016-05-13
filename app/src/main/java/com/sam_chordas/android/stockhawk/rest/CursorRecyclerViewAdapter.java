@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 
+import com.sam_chordas.android.stockhawk.widget.WidgetRemoteViewFactory;
+
 /**
  * Created by sam_chordas on 10/6/15.
  *  Credit to skyfishjy gist:
@@ -17,6 +19,7 @@ public abstract class CursorRecyclerViewAdapter <VH extends RecyclerView.ViewHol
   private boolean dataIsValid;
   private int rowIdColumn;
   private DataSetObserver mDataSetObserver;
+  private WidgetRemoteViewFactory widgetRemoteViewFactory;
   public CursorRecyclerViewAdapter(Context context, Cursor cursor){
     mCursor = cursor;
     dataIsValid = cursor != null;
@@ -25,6 +28,7 @@ public abstract class CursorRecyclerViewAdapter <VH extends RecyclerView.ViewHol
     if (dataIsValid){
       mCursor.registerDataSetObserver(mDataSetObserver);
     }
+    widgetRemoteViewFactory=new WidgetRemoteViewFactory(context);
   }
 
   public Cursor getCursor(){
@@ -80,10 +84,12 @@ public abstract class CursorRecyclerViewAdapter <VH extends RecyclerView.ViewHol
       rowIdColumn = newCursor.getColumnIndexOrThrow("_id");
       dataIsValid = true;
       notifyDataSetChanged();
+      widgetRemoteViewFactory.onDataSetChanged();
     }else{
       rowIdColumn = -1;
       dataIsValid = false;
       notifyDataSetChanged();
+      widgetRemoteViewFactory.onDataSetChanged();
     }
     return oldCursor;
   }
@@ -93,12 +99,14 @@ public abstract class CursorRecyclerViewAdapter <VH extends RecyclerView.ViewHol
       super.onChanged();
       dataIsValid = true;
       notifyDataSetChanged();
+      widgetRemoteViewFactory.onDataSetChanged();
     }
 
     @Override public void onInvalidated() {
       super.onInvalidated();
       dataIsValid = false;
       notifyDataSetChanged();
+      widgetRemoteViewFactory.onDataSetChanged();
     }
   }
 }
