@@ -45,7 +45,8 @@
 
         <activity
             android:name=".ui.StockHistoryActivity"
-            android:label="@string/title_activity_stock_history" >
+            android:label="@string/title_activity_stock_history"
+            android:theme="@style/HistoryTheme">
         </activity>
 
         <receiver android:name="com.sam_chordas.android.stockhawk.widget.WidgetProvider" >

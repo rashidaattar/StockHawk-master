@@ -21,4 +21,19 @@
     <item name="android:textAllCaps">true</item>
   </style>
 
+    <style name="HistoryTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/material_blue_500</item>
+        <item name="colorPrimaryDark">@color/material_blue_700</item>
+    </style>
+
+
+ <style name="AppBarLayout" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+     <item name="colorPrimary">@color/material_blue_500</item>
+     <item name="colorPrimaryDark">@color/material_blue_700</item>
+     <item name="android:textColor">#FFFF</item>
+ </style>
+
+
+
+
 </resources>

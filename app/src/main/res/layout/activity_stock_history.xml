@@ -1,31 +1,198 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.sam_chordas.android.stockhawk.ui.StockHistoryActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/main.appbar"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:theme="@style/AppBarLayout"
+    android:fitsSystemWindows="true"
+    >
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/main.collapsing"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
-
-  <!--  <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:layout_below="@id/chart"
-        card_view:cardCornerRadius="@dimen/card_radius"
-        card_view:cardUseCompatPadding="true"
-        card_view:contentPaddingBottom="@dimen/activity_vertical_margin"
-        card_view:contentPaddingLeft="@dimen/activity_vertical_margin"
-        card_view:contentPaddingRight="@dimen/activity_vertical_margin"
-        card_view:contentPaddingTop="@dimen/activity_vertical_margin"
-        card_view:cardBackgroundColor="@color/material_blue_500"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/card_view"
+        android:layout_height="match_parent"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        android:fitsSystemWindows="true"
+        app:contentScrim="?attr/colorPrimary"
+        app:expandedTitleMarginStart="48dp"
+        app:expandedTitleMarginEnd="64dp"
         >
-        </android.support.v7.widget.CardView>-->
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/main.backdrop"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/ic_show_chart_white_24dp"
+            app:layout_collapseMode="parallax"
+            />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            >
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.CollapsingToolbarLayout>
+</android.support.design.widget.AppBarLayout>
+
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardUseCompatPadding="true"
+
+            card_view:cardBackgroundColor="@color/material_blue_500"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/card_view"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:paddingTop="80dp"/>
+
+
+        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/detail_additional_pane"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            app:columnCount="2"
+            android:paddingBottom="16dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="30dp">
+
+            <TextView
+                android:id="@+id/symbol_label"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="SYMBOL :"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/white"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:id="@+id/symbol_text"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                android:text="SYMBOL :"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"/>
+
+            <TextView
+                android:id="@+id/name_label"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="NAME :"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:id="@+id/name_text"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                android:text="Test1"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"/>
+
+            <TextView
+                android:id="@+id/currency_label"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="CURRENCY :"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"/>
+
+
+            <TextView
+                android:id="@+id/currency_text"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                android:text="Test1"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"/>
+
+
+            <TextView
+                android:id="@+id/stockExchange_label"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="STOCK EXCHANGE :"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:id="@+id/stockExchange_text"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white"
+                app:layout_gravity="fill"
+                android:text="Test1"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"/>
+        </android.support.v7.widget.GridLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>
