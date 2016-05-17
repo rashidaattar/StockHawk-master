@@ -6,7 +6,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#88000000" >
+        android:background="#89000000"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:orientation="horizontal"
+            android:background="@color/material_blue_500">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/StockSymbolTextStyle"
+                android:gravity="start|center|center_vertical"
+                android:text="@string/app_name"/>
+        </LinearLayout>
 
         <ListView
             android:id="@+id/list1"

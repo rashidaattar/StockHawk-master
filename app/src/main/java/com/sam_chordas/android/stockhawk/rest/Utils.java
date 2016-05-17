@@ -91,18 +91,4 @@ public class Utils {
     }
     return builder.build();
   }
-  public boolean isDataAvailable(String json){
-    JSONObject jsonObject = null;
-    try
-    {
-      jsonObject=new JSONObject(json);
-
-
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-
-    return false;
-  }
 }

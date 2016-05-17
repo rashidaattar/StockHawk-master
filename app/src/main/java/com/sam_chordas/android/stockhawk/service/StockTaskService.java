@@ -4,12 +4,10 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Handler;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -35,13 +33,9 @@ import yahoofinance.YahooFinance;
 public class StockTaskService extends GcmTaskService{
   private String LOG_TAG = StockTaskService.class.getSimpleName();
 
- // private OkHttpClient client = new OkHttpClient();
   private Context mContext;
-  private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
   private String[] symbols;
-  SharedPreferences sharedPreferences=null;
-  SharedPreferences.Editor  editor=null;
 
   public StockTaskService(){}
 
@@ -49,14 +43,6 @@ public class StockTaskService extends GcmTaskService{
     mContext = context;
 
   }
-  /*String fetchData(String url) throws IOException{
-    Request request = new Request.Builder()
-        .url(url)
-        .build();
-
-    Response response = client.newCall(request).execute();
-    return response.body().string();
-  }*/
 
   @Override
   public int onRunTask(TaskParams params){
@@ -64,39 +50,37 @@ public class StockTaskService extends GcmTaskService{
     if (mContext == null){
       mContext = this;
     }
-    sharedPreferences= PreferenceManager.getDefaultSharedPreferences(mContext);
-    editor=sharedPreferences.edit();
-    if (params.getTag().equals("init") || params.getTag().equals("periodic")){
+
+    if (params.getTag().equals(mContext.getString(R.string.init_tag)) || params.getTag().equals(mContext.getString(R.string.periodic_tag))){
       isUpdate = true;
       initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
           new String[] { "Distinct " + QuoteColumns.SYMBOL }, null,
           null, null);
       if (initQueryCursor.getCount() == 0 || initQueryCursor == null){
-        symbols=new String[]{"YHOO","AAPL","GOOG","MSFT"};
+        symbols=mContext.getResources().getStringArray(R.array.symbol_array);
       } else if (initQueryCursor != null){
         DatabaseUtils.dumpCursor(initQueryCursor);
         initQueryCursor.moveToFirst();
         List<String> storedSymbolsList=new ArrayList<>();
         for (int i = 0; i < initQueryCursor.getCount(); i++){
 
-          storedSymbolsList.add(initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")));
+          storedSymbolsList.add(initQueryCursor.getString(initQueryCursor.getColumnIndex(QuoteColumns.SYMBOL)));
           initQueryCursor.moveToNext();
         }
 
         symbols=storedSymbolsList.toArray(new String[storedSymbolsList.size()]);
       }
-    } else if (params.getTag().equals("add")){
+    } else if (params.getTag().equals(mContext.getString(R.string.add_tag))){
       isUpdate = false;
       // get symbol from params.getExtra and build query
-      String stockInput = params.getExtras().getString("symbol");
+      String stockInput = params.getExtras().getString(mContext.getString(R.string.symbole_label));
 
       symbols=new String[]{stockInput};
     }
 
     int result = GcmNetworkManager.RESULT_FAILURE;
       try{
-        /*getResponse = fetchData(urlString);
-       */
+
         Map<String, Stock> stocks = YahooFinance.get(symbols);
         result = GcmNetworkManager.RESULT_SUCCESS;
         try {
@@ -107,18 +91,17 @@ public class StockTaskService extends GcmTaskService{
             mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                 null, null);
           }
-          if(stocks.size()==1 && stocks.containsKey(params.getExtras().getString("symbol"))
-                  && stocks.get(params.getExtras().getString("symbol")).getName()==null)
+          if(stocks.size()==1 && stocks.containsKey(params.getExtras().getString(mContext.getString(R.string.symbole_label)))
+                  && stocks.get(params.getExtras().getString(mContext.getString(R.string.symbole_label))).getName()==null)
           {
 
-             // Toast.makeText(mContext,"No such stock exists",Toast.LENGTH_SHORT).show();
-              editor.putBoolean(mContext.getString(R.string.is_data_available),false).commit();
+
               Handler h = new Handler(mContext.getMainLooper());
 
               h.post(new Runnable() {
                 @Override
                 public void run() {
-                  Toast.makeText(mContext,"stock not found",Toast.LENGTH_LONG).show();
+                  Toast.makeText(mContext,mContext.getString(R.string.stock_not_available),Toast.LENGTH_LONG).show();
                 }
               });
 
@@ -131,7 +114,6 @@ public class StockTaskService extends GcmTaskService{
             ArrayList<ContentProviderOperation> batchOperations= Utils.quoteJsonToContentVals(stocks);
             if(batchOperations!=null && batchOperations.size()>0)
             {
-              editor.putBoolean(mContext.getString(R.string.is_data_available),true).commit();
               mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,batchOperations);
             }
           }

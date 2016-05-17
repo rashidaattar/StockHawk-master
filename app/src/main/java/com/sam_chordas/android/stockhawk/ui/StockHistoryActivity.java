@@ -56,7 +56,6 @@ public class StockHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock_history);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Stock History");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_navigate_before_white_24dp));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -69,42 +68,22 @@ public class StockHistoryActivity extends AppCompatActivity {
             }
         });
        // getSupportActionBar().setDisplayShowHomeEnabled(true);
-        if(getIntent().hasExtra("stocksymbol"))
-            symbol=getIntent().getStringExtra("stocksymbol");
+        if(getIntent().hasExtra(getString(R.string.symbole_label)))
+            symbol=getIntent().getStringExtra(getString(R.string.symbole_label));
         if(savedInstanceState==null){
             new MyAsync().execute();
         }
         else{
-            entriesHigh=savedInstanceState.getParcelableArrayList("highEntry");
-            entriesLow=savedInstanceState.getParcelableArrayList("lowEntry");
-            labels=savedInstanceState.getStringArrayList("labels");
-            stockElements=savedInstanceState.getStringArrayList("extraStock");
+            entriesHigh=savedInstanceState.getParcelableArrayList(getString(R.string.high_label));
+            entriesLow=savedInstanceState.getParcelableArrayList(getString(R.string.low_label));
+            labels=savedInstanceState.getStringArrayList(getString(R.string.label_tag));
+            stockElements=savedInstanceState.getStringArrayList(getString(R.string.extrastock_tag));
+            symbol=savedInstanceState.getString(getString(R.string.symbole_label));
             populateChart(entriesHigh,entriesLow,labels);
         }
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(R.menu.menu_stock_history, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-       /* if (id == R.id.action_settings) {
-            return true;
-        }*/
-
-        return super.onOptionsItemSelected(item);
-    }
     class MyAsync extends AsyncTask{
         ProgressDialog progressBar=new ProgressDialog(context);
         @Override
@@ -128,7 +107,7 @@ public class StockHistoryActivity extends AppCompatActivity {
                 stockElements.add(1,stock.getName());
                 stockElements.add(2,stock.getCurrency());
                 stockElements.add(3,stock.getStockExchange());
-                Log.d("test","size is "+historicalQuotes.size());
+               // Log.d("test","size is "+historicalQuotes.size());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -164,41 +143,48 @@ public class StockHistoryActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
 
         if(entriesHigh!=null){
-            outState.putParcelableArrayList("highEntry",entriesHigh);
+            outState.putParcelableArrayList(getString(R.string.high_label),entriesHigh);
         }
        if(entriesLow!=null){
-           outState.putParcelableArrayList("lowEntry",entriesLow);
+           outState.putParcelableArrayList(getString(R.string.low_label),entriesLow);
        }
        if(labels!=null){
-           outState.putStringArrayList("labels",labels);
+           outState.putStringArrayList(getString(R.string.label_tag),labels);
        }
 
         if(stockElements!=null){
-            outState.putStringArrayList("extraStock",stockElements);
+            outState.putStringArrayList(getString(R.string.extrastock_tag),stockElements);
+        }
+        if(symbol!=null){
+            outState.putString(getString(R.string.symbole_label),symbol);
         }
         super.onSaveInstanceState(outState);
     }
 
     public void populateChart( ArrayList<Entry> entriesHigh,ArrayList<Entry> entriesLow,ArrayList<String> labels ){
-        LineDataSet datasetHigh = new LineDataSet(entriesHigh, "High");
-        LineDataSet datasetLow=new LineDataSet(entriesLow,"Low");
+        LineDataSet datasetHigh = new LineDataSet(entriesHigh, getString(R.string.high_label));
+        LineDataSet datasetLow=new LineDataSet(entriesLow,getString(R.string.low_label));
         datasetHigh.setValueTextColor(context.getResources().getColor(R.color.material_green_700));
-        datasetHigh.setHighLightColor(context.getResources().getColor(R.color.material_green_700));
+        datasetHigh.setColor(context.getResources().getColor(R.color.material_green_700));
         datasetLow.setValueTextColor(context.getResources().getColor(R.color.material_red_700));
-        datasetLow.setHighLightColor(context.getResources().getColor(R.color.material_red_700));
+        datasetLow.setColor(context.getResources().getColor(R.color.material_red_700));
         List<LineDataSet> lineDataSets=new ArrayList<>();
         lineDataSets.add(datasetHigh);
         lineDataSets.add(datasetLow);
         LineData data = new LineData(labels, lineDataSets);
        // data.setValueTextColor(context.getResources().getColor(R.color.material_red_700));
         lineChart.setData(data);
-        lineChart.setDescription("Stocks");
+        lineChart.setDescription(symbol);
         lineChart.setAutoScaleMinMaxEnabled(true);
         lineChart.fitScreen();
         symbolText.setText(stockElements.get(0));
+        symbolText.setContentDescription(String.format(getString(R.string.symbol_description),stockElements.get(0)));
         nameText.setText(stockElements.get(1));
+        nameText.setContentDescription(String.format(getString(R.string.name_description),stockElements.get(1)));
         currencyText.setText(stockElements.get(2));
+        currencyText.setContentDescription(String.format(getString(R.string.currency_description),stockElements.get(2)));
         stockExText.setText(stockElements.get(3));
+        stockExText.setContentDescription(String.format(getString(R.string.exchange_description),stockElements.get(3)));
     }
 }
 

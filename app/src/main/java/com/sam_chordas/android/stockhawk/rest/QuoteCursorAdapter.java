@@ -51,10 +51,14 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
   @Override
   public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor){
-    viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
-    viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
+    viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+    viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
+    viewHolder.symbol.setContentDescription(String.format(mContext.getString(R.string.symbol_description),
+                                               cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)) ));
+    viewHolder.bidPrice.setContentDescription(String.format(mContext.getString(R.string.bid_description),
+                                                cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE))));
     int sdk = Build.VERSION.SDK_INT;
-    if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1){
+    if (cursor.getInt(cursor.getColumnIndex(QuoteColumns.ISUP)) == 1){
       if (sdk < Build.VERSION_CODES.JELLY_BEAN){
         viewHolder.change.setBackgroundDrawable(
             mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
@@ -72,9 +76,9 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
       }
     }
     if (Utils.showPercent){
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
+      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
     } else{
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
+      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.CHANGE)));
     }
   }
 
@@ -93,7 +97,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
     notifyItemRemoved(position);
     Snackbar snackbar = Snackbar
-            .make(rv, "Stock is deleted", Snackbar.LENGTH_LONG);
+            .make(rv, mContext.getString(R.string.snackbar_description), Snackbar.LENGTH_LONG);
     snackbar.setAction("UNDO", new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -110,7 +114,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         notifyDataSetChanged();
         widgetRemoteViewFactory.onDataSetChanged();
         Snackbar snackbar1 = Snackbar
-                .make(rv1, "Stock is restored", Snackbar.LENGTH_SHORT);
+                .make(rv1, mContext.getString(R.string.snackbar_restore_description), Snackbar.LENGTH_SHORT);
         snackbar1.show();
       }
     }).show();

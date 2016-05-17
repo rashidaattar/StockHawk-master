@@ -21,16 +21,15 @@
         android:fitsSystemWindows="true"
         app:contentScrim="?attr/colorPrimary"
         app:expandedTitleMarginStart="48dp"
-        app:expandedTitleMarginEnd="64dp"
+        app:expandedTitleMarginEnd="60dp"
         >
         <ImageView
             android:id="@+id/main.backdrop"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:layout_gravity="center"
             android:fitsSystemWindows="true"
-            android:src="@drawable/ic_show_chart_white_24dp"
+            android:src="@drawable/collapse_stock"
             app:layout_collapseMode="parallax"
             />
         <android.support.v7.widget.Toolbar
@@ -54,31 +53,32 @@
         android:orientation="vertical"
         android:gravity="center">
 
-
-
-
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="8dp"
             card_view:cardUseCompatPadding="true"
-
             card_view:cardBackgroundColor="@color/material_blue_500"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
             android:id="@+id/card_view"
             >
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_margin="20dp">
+
+
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:paddingTop="80dp"/>
+                android:contentDescription="@string/chart_description"
+                />
 
 
         <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -90,10 +90,10 @@
             android:layout_weight="2"
             app:columnCount="2"
             android:paddingBottom="16dp"
-            android:paddingEnd="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingStart="8dp"
+            android:paddingEnd="3dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingStart="3dp"
             android:paddingTop="30dp">
 
             <TextView
@@ -101,92 +101,96 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:text="SYMBOL :"
+                android:text="@string/symbole_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
                 app:layout_rowWeight="1"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
 
             <TextView
                 android:id="@+id/symbol_text"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:text="@string/test_string"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
-                android:text="SYMBOL :"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
+                app:layout_rowWeight="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
 
             <TextView
                 android:id="@+id/name_label"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:text="NAME :"
+                android:text="@string/name_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
                 app:layout_rowWeight="1"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
 
             <TextView
                 android:id="@+id/name_text"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:text="@string/test_string"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
-                android:text="Test1"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
+                app:layout_rowWeight="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
 
             <TextView
                 android:id="@+id/currency_label"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:text="CURRENCY :"
+                android:text="@string/currency_label"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 app:layout_gravity="fill"
                 app:layout_rowWeight="1"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
 
 
             <TextView
                 android:id="@+id/currency_text"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:text="@string/test_string"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
-                android:text="Test1"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
+                app:layout_rowWeight="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
 
 
             <TextView
                 android:id="@+id/stockExchange_label"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:text="STOCK EXCHANGE :"
+                android:text="@string/exchange_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
                 app:layout_rowWeight="1"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
 
             <TextView
                 android:id="@+id/stockExchange_text"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:text="@string/test_string"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/white"
                 app:layout_gravity="fill"
-                android:text="Test1"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
+                app:layout_rowWeight="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
         </android.support.v7.widget.GridLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>

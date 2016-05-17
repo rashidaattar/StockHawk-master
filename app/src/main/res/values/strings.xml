@@ -7,11 +7,45 @@
   <string name="action_change_units">Change Units</string>
   <string name="symbol_search">Symbol Search</string>
   <string name="content_test">Search for a Stock Symbol</string>
-  <string name="input_hint">FB</string>
+  <string name="input_hint" translatable="false">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
-  <string name="is_data_available">isdataAvailable</string>
-    <string name="title_activity_stock_history">Stock History</string>
+  <string name="title_activity_stock_history">Stock History</string>
+  <string name="stock_not_available" >No such stock available</string>
+  <string name="stock_available">This stock is already saved!</string>
+  <string name="is_current_check">1</string>
 
-    <string name="hello_world">Hello world!</string>
+
+  <array name="symbol_array" translatable = "false">
+    <item>YHOO</item>
+    <item>AAPL</item>
+    <item>GOOG</item>
+    <item>MSFT</item>
+  </array>
+  <string name="periodic_tag" translatable="false">periodic</string>
+  <string name="init_tag" translatable="false">init</string>
+  <string name="add_tag" translatable="false">add</string>
+  <string name="symbol" translatable="false">symbol</string>
+  <string name="tag_label" translatable="false">tag</string>
+  <string name="label_tag" translatable="false">labels</string>
+  <string name="extrastock_tag" translatable="false">stockElements</string>
+  <string name="high_label">HIGH</string>
+  <string name="low_label">LOW</string>
+  <string name="symbole_label">SYMBOL</string>
+  <string name="name_label">NAME</string>
+  <string name="currency_label">CURRENCY</string>
+  <string name="exchange_label">EXCHANGE</string>
+  <string name="test_string">TEST</string>
+  
+  
+  <!--adding strings for content description-->
+  <string name="fab_description">press button to add a stock</string>
+  <string name="symbol_description">STOCK %1$s</string>
+  <string name="bid_description">Bid pice %1$s</string>
+  <string name="name_description">Name %1$s</string>
+  <string name="currency_description">Currency %1$s</string>
+  <string name="exchange_description">Exchange %1$s</string>
+  <string name="snackbar_description">Stock is deleted</string>
+  <string name="snackbar_restore_description">Stock restored</string>
+  <string name="chart_description">History of 1yr stock data</string>
 </resources>
