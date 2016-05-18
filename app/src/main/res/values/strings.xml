@@ -13,6 +13,7 @@
   <string name="title_activity_stock_history">Stock History</string>
   <string name="stock_not_available" >No such stock available</string>
   <string name="stock_available">This stock is already saved!</string>
+  <string name="invalid_input">Please Enter Stock name</string>
   <string name="is_current_check">1</string>
 
 

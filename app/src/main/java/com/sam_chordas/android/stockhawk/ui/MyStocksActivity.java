@@ -56,6 +56,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Context mContext;
   private Cursor mCursor;
   boolean isConnected;
+  private final  long period = 1800L; //made this half an hour
+  private final long flex = 10L;
   @BindView(R.id.recycler_view) RecyclerView recyclerView;
   @BindView(R.id.fab) FloatingActionButton fab;
 
@@ -69,12 +71,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     isConnected = activeNetwork != null &&
         activeNetwork.isConnectedOrConnecting();
     setContentView(R.layout.activity_my_stocks);
-    // The intent service is for executing immediate pulls from the Yahoo API
-    // GCMTaskService can only schedule tasks, they cannot execute immediately
     ButterKnife.bind(this);
     mServiceIntent = new Intent(this, StockIntentService.class);
     if (savedInstanceState == null){
-      // Run the initialize task service so that some stocks appear upon an empty database
       mServiceIntent.putExtra(getString(R.string.tag_label), getString(R.string.init_tag));
       if (isConnected){
         startService(mServiceIntent);
@@ -83,7 +82,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         finishAffinity();
       }
     }
-    //RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
@@ -102,8 +100,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             }));
     recyclerView.setAdapter(mCursorAdapter);
 
-
-    //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.attachToRecyclerView(recyclerView);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -147,8 +143,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     mTitle = getTitle();
     if (isConnected){
-      long period = 1800L; //made this half an hour
-      long flex = 10L;
+
       String periodicTag = getString(R.string.periodic_tag);
 
       // create a periodic task to pull stocks once every hour after the app has been opened. This
