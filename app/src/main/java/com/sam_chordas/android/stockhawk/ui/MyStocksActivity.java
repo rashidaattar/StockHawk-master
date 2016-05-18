@@ -58,6 +58,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   boolean isConnected;
   private final  long period = 1800L; //made this half an hour
   private final long flex = 10L;
+  private int scroll_position=0;
   @BindView(R.id.recycler_view) RecyclerView recyclerView;
   @BindView(R.id.fab) FloatingActionButton fab;
 
@@ -82,6 +83,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         finishAffinity();
       }
     }
+    else
+    {
+      scroll_position=savedInstanceState.getInt(getString(R.string.position_tag));
+    }
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
@@ -92,6 +97,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 //TODO:
                 // do something on item click
                 mCursor.moveToPosition(position);
+                scroll_position=position;
                 String symbol=mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
                 Intent intent=new Intent(mContext,StockHistoryActivity.class);
                 intent.putExtra(getString(R.string.symbole_label),symbol);
@@ -99,7 +105,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
-
+    recyclerView.smoothScrollToPosition(scroll_position);
     fab.attachToRecyclerView(recyclerView);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -136,7 +142,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
       }
     });
-
     ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter,recyclerView);
     mItemTouchHelper = new ItemTouchHelper(callback);
     mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -236,4 +241,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   }
 
 
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    outState.putInt(getString(R.string.position_tag),scroll_position);
+    super.onSaveInstanceState(outState);
+  }
 }

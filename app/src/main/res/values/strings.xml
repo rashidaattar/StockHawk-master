@@ -30,6 +30,7 @@
   <string name="tag_label" translatable="false">tag</string>
   <string name="label_tag" translatable="false">labels</string>
   <string name="extrastock_tag" translatable="false">stockElements</string>
+  <string name="position_tag" translatable="false">position</string>
   <string name="high_label">HIGH</string>
   <string name="low_label">LOW</string>
   <string name="symbole_label">SYMBOL</string>
